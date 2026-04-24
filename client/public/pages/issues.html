@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Issues — VolunteerMS</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <!-- Tesseract.js for OCR -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">VolunteerMS</div>
+    <ul class="nav-links">
+      <li><a href="/index.html">Dashboard</a></li>
+      <li><a href="/pages/map.html">Impact Map</a></li>
+      <li><a href="/pages/issues.html" class="active">Issues</a></li>
+      <li><a href="/pages/volunteers.html">Volunteers</a></li>
+      <li><a href="/pages/tasks.html">Tasks</a></li>
+      <li><a href="/pages/admin.html">Admin</a></li>
+    </ul>
+    <button class="mobile-menu-btn">☰</button>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <div>
+        <h2>Community Issues</h2>
+        <p class="subtitle">Manage reports, ingest data, and dispatch volunteers</p>
+      </div>
+      <div class="flex-gap">
+        <button class="btn btn-outline" onclick="openModal('upload-modal')">
+          <svg style="width:16px;height:16px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+          Upload Data
+        </button>
+        <button class="btn btn-primary" onclick="openModal('add-issue-modal')">+ Report Issue</button>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <select id="filter-type" onchange="loadIssues()">
+        <option value="">All Problem Types</option>
+        <option value="water">Water</option>
+        <option value="education">Education</option>
+        <option value="health">Health</option>
+        <option value="food">Food</option>
+        <option value="shelter">Shelter</option>
+      </select>
+      <select id="filter-status" onchange="loadIssues()">
+        <option value="">All Statuses</option>
+        <option value="open">Open</option>
+        <option value="assigned">Assigned</option>
+        <option value="resolved">Resolved</option>
+      </select>
+    </div>
+
+    <div id="issues-list" class="card-grid"></div>
+  </main>
+
+  <!-- Upload Data Modal (CSV or OCR) -->
+  <div id="upload-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Field-to-Cloud Data Ingestion</h3>
+        <button onclick="closeModal('upload-modal')" class="close-btn">×</button>
+      </div>
+      
+      <div style="margin-bottom: 1.5rem;">
+        <p style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 1rem;">Upload bulk CSV data or scan a paper survey via OCR.</p>
+        
+        <!-- CSV Dropzone -->
+        <div class="drop-zone" id="csv-drop">
+          <div class="drop-zone-icon">📊</div>
+          <div class="drop-zone-text">Drag & drop CSV here or click to browse</div>
+          <input type="file" id="csv-file" accept=".csv" style="display: none;" />
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('csv-file').click()">Select CSV</button>
+        </div>
+
+        <!-- OCR Dropzone -->
+        <div class="drop-zone" id="ocr-drop">
+          <div class="drop-zone-icon">📸</div>
+          <div class="drop-zone-text">Upload paper survey photo for AI extraction</div>
+          <input type="file" id="ocr-file" accept="image/*" style="display: none;" />
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('ocr-file').click()">Select Image</button>
+          <div id="ocr-progress" style="margin-top: 10px; font-size: 0.85rem; color: var(--primary); display: none;">Scanning document...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Issue Modal -->
+  <div id="add-issue-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Report New Issue</h3>
+        <button onclick="closeModal('add-issue-modal')" class="close-btn">×</button>
+      </div>
+      <form id="issue-form">
+        <label>Title</label>
+        <input type="text" id="issue-title" required/>
+        <label>Description</label>
+        <textarea id="issue-desc" rows="3"></textarea>
+        <label>Location (City or Coordinates)</label>
+        <input type="text" id="issue-location" required/>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <label>Problem Type</label>
+            <select id="issue-type" required>
+              <option value="water">Water</option>
+              <option value="education">Education</option>
+              <option value="health">Health</option>
+              <option value="food">Food</option>
+              <option value="shelter">Shelter</option>
+            </select>
+          </div>
+          <div>
+            <label>Severity (1–5)</label>
+            <input type="number" id="issue-severity" min="1" max="5" value="3" required/>
+          </div>
+        </div>
+        
+        <label>People Affected</label>
+        <input type="number" id="issue-people" min="0" value="0"/>
+        
+        <button type="submit" class="btn btn-primary full-width">Submit Issue</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Match Modal -->
+  <div id="match-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Smart Volunteer Dispatch</h3>
+        <button onclick="closeModal('match-modal')" class="close-btn">×</button>
+      </div>
+      <div id="match-results"></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
+  <script src="/js/issues.js"></script>
+  <script>
+    document.querySelector('.mobile-menu-btn').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('show');
+    });
+  </script>
+</body>
+</html>

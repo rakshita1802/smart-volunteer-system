@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Volunteer Management System</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">VolunteerMS</div>
+    <ul class="nav-links">
+      <li><a href="/index.html">Dashboard</a></li>
+      <li><a href="/pages/issues.html">Issues</a></li>
+      <li><a href="/pages/volunteers.html">Volunteers</a></li>
+      <li><a href="/pages/tasks.html">Tasks</a></li>
+      <li><a href="/pages/admin.html">Admin</a></li>
+    </ul>
+    <button class="mobile-menu-btn">☰</button>
+  </nav>
+
+  <main class="container">
+    <h1>Community Volunteer Management</h1>
+    <p class="subtitle">Track community issues, match volunteers, and manage tasks efficiently.</p>
+
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="total-issues">—</div>
+        <div class="stat-label">Total Issues</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="open-issues">—</div>
+        <div class="stat-label">Open Issues</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="total-volunteers">—</div>
+        <div class="stat-label">Active Volunteers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="tasks-completed">—</div>
+        <div class="stat-label">Tasks Completed</div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-box">
+        <h3>Issues by type</h3>
+        <canvas id="typeChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>Issues by area</h3>
+        <canvas id="areaChart"></canvas>
+      </div>
+    </div>
+
+    <div class="recent-section">
+      <h3>Recent critical issues</h3>
+      <div id="critical-issues"></div>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script>
+    document.querySelector('.mobile-menu-btn').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('show');
+    });
+  </script>
+</body>
+</html>

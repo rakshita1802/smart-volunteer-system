@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Impact Map — VolunteerMS</title>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <style>
+    .leaflet-popup-content-wrapper {
+      background: rgba(30, 41, 59, 0.95);
+      color: #fff;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+    }
+    .leaflet-popup-tip {
+      background: rgba(30, 41, 59, 0.95);
+    }
+    .leaflet-popup-content h4 {
+      margin: 0 0 5px;
+      font-family: 'Outfit', sans-serif;
+    }
+    .leaflet-popup-content p {
+      margin: 0 0 10px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">VolunteerMS</div>
+    <ul class="nav-links">
+      <li><a href="/index.html">Dashboard</a></li>
+      <li><a href="/pages/map.html" class="active">Impact Map</a></li>
+      <li><a href="/pages/issues.html">Issues</a></li>
+      <li><a href="/pages/volunteers.html">Volunteers</a></li>
+      <li><a href="/pages/tasks.html">Tasks</a></li>
+      <li><a href="/pages/admin.html">Admin</a></li>
+    </ul>
+    <button class="mobile-menu-btn">☰</button>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <div>
+        <h2>Impact Map</h2>
+        <p class="subtitle">Live visualization of urgent community needs</p>
+      </div>
+      <div class="flex-gap">
+        <span class="badge badge-open">High Urgency</span>
+        <span class="badge badge-pending">Medium Urgency</span>
+        <span class="badge badge-resolved">Low Urgency</span>
+      </div>
+    </div>
+
+    <div class="card p-0" style="padding: 0;">
+      <div id="impact-map" class="map-container" style="height: 650px; border: none; border-radius: 16px;"></div>
+    </div>
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="/js/map.js"></script>
+  <script>
+    document.querySelector('.mobile-menu-btn').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('show');
+    });
+  </script>
+</body>
+</html>

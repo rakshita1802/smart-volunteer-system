@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Volunteers — VolunteerMS</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">VolunteerMS</div>
+    <ul class="nav-links">
+      <li><a href="/index.html">Dashboard</a></li>
+      <li><a href="/pages/map.html">Impact Map</a></li>
+      <li><a href="/pages/issues.html">Issues</a></li>
+      <li><a href="/pages/volunteers.html" class="active">Volunteers</a></li>
+      <li><a href="/pages/tasks.html">Tasks</a></li>
+      <li><a href="/pages/admin.html">Admin</a></li>
+    </ul>
+    <button class="mobile-menu-btn">☰</button>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <div>
+        <h2>Volunteer Roster</h2>
+        <p class="subtitle">Manage and onboard community responders</p>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('add-volunteer-modal')">+ Add Volunteer</button>
+    </div>
+
+    <div id="volunteers-list" class="card-grid"></div>
+  </main>
+
+  <!-- Add Volunteer Modal -->
+  <div id="add-volunteer-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Onboard New Volunteer</h3>
+        <button onclick="closeModal('add-volunteer-modal')" class="close-btn">×</button>
+      </div>
+      <form id="volunteer-form">
+        <label>Name</label>
+        <input type="text" id="vol-name" required/>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <label>Email</label>
+            <input type="email" id="vol-email" required/>
+          </div>
+          <div>
+            <label>Phone</label>
+            <input type="text" id="vol-phone"/>
+          </div>
+        </div>
+        
+        <label>Location (City)</label>
+        <input type="text" id="vol-location" required/>
+        
+        <label>Skills (comma separated)</label>
+        <input type="text" id="vol-skills" placeholder="e.g. medical, engineering, logistics" required/>
+        
+        <label>Availability</label>
+        <select id="vol-availability" required>
+          <option value="anytime">Anytime</option>
+          <option value="weekdays">Weekdays</option>
+          <option value="weekends">Weekends</option>
+        </select>
+        
+        <button type="submit" class="btn btn-primary full-width" style="margin-top: 1.5rem;">Register Volunteer</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
+  <script src="/js/volunteers.js"></script>
+  <script>
+    document.querySelector('.mobile-menu-btn').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('show');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — VolunteerMS</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">VolunteerMS</div>
+    <ul class="nav-links">
+      <li><a href="/index.html">Dashboard</a></li>
+      <li><a href="/pages/issues.html">Issues</a></li>
+      <li><a href="/pages/volunteers.html">Volunteers</a></li>
+      <li><a href="/pages/tasks.html">Tasks</a></li>
+      <li><a href="/pages/admin.html" class="active">Admin</a></li>
+    </ul>
+    <button class="mobile-menu-btn">☰</button>
+  </nav>
+
+  <main class="container">
+    <h2>Admin Panel</h2>
+
+    <div class="admin-tabs">
+      <button class="tab-btn active" onclick="showTab('tab-issues', this)">Issues</button>
+      <button class="tab-btn" onclick="showTab('tab-volunteers', this)">Volunteers</button>
+      <button class="tab-btn" onclick="showTab('tab-tasks', this)">Tasks</button>
+    </div>
+
+    <div id="tab-issues" class="tab-content">
+      <table class="admin-table" id="admin-issues-table">
+        <thead>
+          <tr><th>ID</th><th>Title</th><th>Location</th><th>Type</th><th>Severity</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="admin-issues-body"></tbody>
+      </table>
+    </div>
+
+    <div id="tab-volunteers" class="tab-content hidden">
+      <table class="admin-table" id="admin-volunteers-table">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Email</th><th>Location</th><th>Skills</th><th>Availability</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="admin-volunteers-body"></tbody>
+      </table>
+    </div>
+
+    <div id="tab-tasks" class="tab-content hidden">
+      <table class="admin-table" id="admin-tasks-table">
+        <thead>
+          <tr><th>ID</th><th>Title</th><th>Issue</th><th>Volunteer</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="admin-tasks-body"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="/js/admin.js"></script>
+  <script>
+    document.querySelector('.mobile-menu-btn').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('show');
+    });
+  </script>
+</body>
+</html>

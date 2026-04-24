@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tasks — VolunteerMS</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">VolunteerMS</div>
+    <ul class="nav-links">
+      <li><a href="/index.html">Dashboard</a></li>
+      <li><a href="/pages/issues.html">Issues</a></li>
+      <li><a href="/pages/volunteers.html">Volunteers</a></li>
+      <li><a href="/pages/tasks.html" class="active">Tasks</a></li>
+      <li><a href="/pages/admin.html">Admin</a></li>
+    </ul>
+    <button class="mobile-menu-btn">☰</button>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <h2>Task Board</h2>
+    </div>
+    <div class="kanban">
+      <div class="kanban-col">
+        <div class="kanban-title pending">Pending</div>
+        <div id="col-pending" class="kanban-cards"></div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-title in_progress">In Progress</div>
+        <div id="col-in_progress" class="kanban-cards"></div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-title completed">Completed</div>
+        <div id="col-completed" class="kanban-cards"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/tasks.js"></script>
+  <script>
+    document.querySelector('.mobile-menu-btn').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('show');
+    });
+  </script>
+</body>
+</html>
