@@ -1,4 +1,4 @@
-const API = 'http://localhost:5000/api';
+const API = '/api';
 
 async function loadIssues() {
   const type = document.getElementById('filter-type').value;

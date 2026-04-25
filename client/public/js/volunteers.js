@@ -1,4 +1,4 @@
-const API = 'http://localhost:5000/api';
+const API = '/api';
 
 async function loadVolunteers() {
   const volunteers = await fetch(`${API}/volunteers`).then(r => r.json());

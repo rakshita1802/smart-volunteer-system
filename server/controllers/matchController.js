@@ -103,6 +103,11 @@ const autoAssign = async (req, res) => {
     if (issue.rows.length === 0) return res.status(404).json({ error: 'Issue not found' });
 
     const i = issue.rows[0];
+    
+    // Get Volunteer info for simulation
+    const volResult = await pool.query('SELECT * FROM volunteers WHERE id = $1', [volunteer_id]);
+    const volName = volResult.rows.length > 0 ? volResult.rows[0].name : `Volunteer #${volunteer_id}`;
+    
     const task = await pool.query(
       `INSERT INTO tasks (issue_id, volunteer_id, title, description, required_skill, status, assigned_at)
        VALUES ($1, $2, $3, $4, $5, 'pending', NOW()) RETURNING *`,
@@ -112,6 +117,22 @@ const autoAssign = async (req, res) => {
        SKILL_MAP[i.problem_type]?.[0] || 'general']
     );
     await pool.query('UPDATE issues SET status = $1 WHERE id = $2', ['assigned', issue_id]);
+    
+    // 1. Simulated Real-World SMS Dispatch
+    console.log(`\n========================================`);
+    console.log(`🚀 [SIMULATED SMS DISPATCH]`);
+    console.log(`To: ${volName}`);
+    console.log(`Message: You have been deployed to an urgent issue: "${i.title}" at ${i.location}. Please check your dashboard for details.`);
+    console.log(`Status: Delivered Successfully via Twilio/Nexmo API`);
+    console.log(`========================================\n`);
+
+    // 2. Broadcast to Command Center Dashboard
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('issue_updated', { ...i, status: 'assigned' });
+      io.emit('new_task', task.rows[0]);
+    }
+
     res.status(201).json(task.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });

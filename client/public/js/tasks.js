@@ -1,4 +1,4 @@
-const API = 'http://localhost:5000/api';
+const API = '/api';
 
 async function loadTasks() {
   const tasks = await fetch(`${API}/tasks`).then(r => r.json());

@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
 const cors = require('cors');
 const path = require('path');
 const helmet = require('helmet');
@@ -7,7 +9,16 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
 
+// Attach io to app so routes/controllers can access it
+app.set('io', io);
+
+io.on('connection', (socket) => {
+  console.log('📡 Connected to Real-Time Command Center');
+  socket.on('disconnect', () => console.log('Client disconnected'));
+});
 // --- Industry-Standard Security & Logging ---
 // Use Helmet to secure HTTP headers, but allow our CDNs (Leaflet, Chart.js, Fonts, Tesseract)
 app.use(helmet({
@@ -15,6 +26,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdnjs.cloudflare.com", "https://unpkg.com", "https://cdn.jsdelivr.net"],
+      scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "blob:", "https://*.basemaps.cartocdn.com", "https://unpkg.com"],
@@ -65,6 +77,6 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

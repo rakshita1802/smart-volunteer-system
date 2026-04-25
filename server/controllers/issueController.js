@@ -41,7 +41,13 @@ const createIssue = async (req, res) => {
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
       [title, description, location, problem_type, severity, people_affected]
     );
-    res.status(201).json(result.rows[0]);
+    const newIssue = result.rows[0];
+    
+    // Broadcast to Command Center (Dashboard & Map)
+    const io = req.app.get('io');
+    if (io) io.emit('new_issue', newIssue);
+    
+    res.status(201).json(newIssue);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -55,7 +61,11 @@ const updateIssue = async (req, res) => {
        severity=$5, people_affected=$6, status=$7 WHERE id=$8 RETURNING *`,
       [title, description, location, problem_type, severity, people_affected, status, req.params.id]
     );
-    res.json(result.rows[0]);
+    const updated = result.rows[0];
+    const io = req.app.get('io');
+    if (io) io.emit('issue_updated', updated);
+    
+    res.json(updated);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -64,6 +74,8 @@ const updateIssue = async (req, res) => {
 const deleteIssue = async (req, res) => {
   try {
     await pool.query('DELETE FROM issues WHERE id = $1', [req.params.id]);
+    const io = req.app.get('io');
+    if (io) io.emit('issue_deleted', req.params.id);
     res.json({ message: 'Issue deleted' });
   } catch (err) {
     res.status(500).json({ error: err.message });

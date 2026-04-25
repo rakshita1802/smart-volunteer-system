@@ -53,12 +53,21 @@
       </div>
     </div>
 
-    <div class="recent-section">
-      <h3>Recent critical issues</h3>
-      <div id="critical-issues"></div>
+    <div class="charts-row">
+      <div class="recent-section" style="background: var(--surface); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border);">
+        <h3 style="margin-bottom: 1rem; color: #fff;">🚨 Live Crisis Feed</h3>
+        <div id="critical-issues" style="max-height: 300px; overflow-y: auto;"></div>
+      </div>
+      
+      <div class="recent-section" style="background: var(--surface); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border);">
+        <h3 style="margin-bottom: 1rem; color: #fff;">🏆 Community Heroes</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Top volunteers by tasks completed.</p>
+        <div id="leaderboard"></div>
+      </div>
     </div>
   </main>
 
+  <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="/js/dashboard.js"></script>
   <script>

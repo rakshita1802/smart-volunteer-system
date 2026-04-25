@@ -1,4 +1,4 @@
-const API = 'http://localhost:5000/api';
+const API = '/api';
 
 async function loadDashboard() {
   const [issues, volunteers, tasks] = await Promise.all([
@@ -36,15 +36,53 @@ async function loadDashboard() {
     options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
   });
 
-  // Critical issues list
-  const critical = issues.filter(i => i.severity >= 4 && i.status !== 'resolved').slice(0, 5);
+  // Live Crisis Feed
+  const critical = issues.filter(i => i.status !== 'resolved').slice(0, 5);
   const container = document.getElementById('critical-issues');
   container.innerHTML = critical.map(i => `
-    <div class="issue-row">
+    <div class="issue-row" id="issue-${i.id}">
       <span>${i.title} — <span class="badge badge-${i.problem_type}">${i.problem_type}</span></span>
       <span class="badge badge-${i.status}">${i.status}</span>
     </div>
   `).join('');
+  
+  // Community Heroes Leaderboard
+  const volStats = {};
+  volunteers.forEach(v => volStats[v.id] = { name: v.name, tasks: 0 });
+  tasks.filter(t => t.status === 'completed').forEach(t => {
+    if (volStats[t.volunteer_id]) volStats[t.volunteer_id].tasks++;
+  });
+  
+  const sortedHeroes = Object.values(volStats).sort((a,b) => b.tasks - a.tasks).slice(0, 5);
+  const leaderContainer = document.getElementById('leaderboard');
+  leaderContainer.innerHTML = sortedHeroes.map((h, idx) => `
+    <div class="issue-row" style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="display:flex; align-items:center; gap: 10px;">
+        <div style="width:24px; height:24px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:bold;">${idx+1}</div>
+        <strong>${h.name}</strong>
+      </div>
+      <span class="badge badge-success">${h.tasks} Tasks</span>
+    </div>
+  `).join('');
+}
+
+// ⚡ Real-Time Socket.io Connection ⚡
+if (typeof io !== 'undefined') {
+  const socket = io();
+  socket.on('new_issue', (issue) => {
+    // Show a toast notification
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed; top:20px; right:20px; background:var(--danger); color:white; padding:1rem 1.5rem; border-radius:8px; z-index:1000; box-shadow:0 10px 15px rgba(0,0,0,0.3); font-weight:600; animation:fadeIn 0.3s;';
+    toast.innerText = `🚨 NEW EMERGENCY: ${issue.title}`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+    
+    // Refresh dashboard to show live data
+    loadDashboard();
+  });
+  
+  socket.on('issue_updated', () => loadDashboard());
+  socket.on('new_task', () => loadDashboard());
 }
 
 loadDashboard();
