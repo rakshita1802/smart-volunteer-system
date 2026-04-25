@@ -69,21 +69,14 @@ router.post('/scan', upload.single('image'), async (req, res, next) => {
             { inlineData: { data: imageData.toString('base64'), mimeType } }
           ]
         }
-      ]
+      ],
+      config: {
+        responseMimeType: "application/json",
+      }
     });
 
     const responseText = response.text;
-    
-    // Try to parse the JSON output from Gemini
-    // We strip out markdown code blocks if Gemini added them
-    let jsonStr = responseText;
-    if (jsonStr.includes('```json')) {
-      jsonStr = jsonStr.split('```json')[1].split('```')[0].trim();
-    } else if (jsonStr.includes('```')) {
-      jsonStr = jsonStr.split('```')[1].split('```')[0].trim();
-    }
-    
-    const extractedData = JSON.parse(jsonStr);
+    const extractedData = JSON.parse(responseText);
 
     // Clean up
     fs.unlinkSync(req.file.path);
